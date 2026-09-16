@@ -160,10 +160,11 @@ const TAGS = ["collection", "product"];
 
 /* Every collection with its published pieces, in the editors' order.
    Fetches are cached and deduplicated, so calling this from several
-   components on one page costs one request. */
+   components on one page costs one request. The live fetch brands its
+   strings for visual editing — a type-level mark only, hence the cast. */
 export async function getCategories(): Promise<Category[]> {
   const { data } = await sanityFetch({ query: COLLECTIONS_QUERY, tags: TAGS });
-  return (data as COLLECTIONS_QUERY_RESULT).map(buildCategory);
+  return (data as unknown as COLLECTIONS_QUERY_RESULT).map(buildCategory);
 }
 
 /* For generateStaticParams, which runs outside any request: published
@@ -175,7 +176,7 @@ export async function getCategoriesForBuild(): Promise<Category[]> {
     perspective: "published",
     stega: false,
   });
-  return (data as COLLECTIONS_QUERY_RESULT).map(buildCategory);
+  return (data as unknown as COLLECTIONS_QUERY_RESULT).map(buildCategory);
 }
 
 export async function getCategory(slug: string) {
@@ -196,16 +197,4 @@ export function toListing(category: Category): CategoryListing {
   const { editorial, ...listing } = category;
   void editorial;
   return listing;
-}
-
-export function configurationOptions(products: Product[]) {
-  return Array.from(new Set(products.map((p) => p.configuration)));
-}
-
-export function sizeOptions(products: Product[]) {
-  const sizes = new Set<string>();
-  products.forEach((p) =>
-    p.sizes.filter((s) => s !== "—").forEach((s) => sizes.add(s))
-  );
-  return Array.from(sizes);
 }

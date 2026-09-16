@@ -4,11 +4,8 @@ import SanityPicture from "@/components/sanity-picture";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import {
-  configurationOptions,
-  sizeOptions,
-  type CategoryListing,
-} from "@/lib/catalog";
+import type { CategoryListing } from "@/lib/catalog";
+import { configurationOptions, sizeOptions } from "@/lib/product-filters";
 
 const EASE = [0.19, 1, 0.22, 1] as const;
 

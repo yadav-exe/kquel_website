@@ -40,18 +40,18 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     tags: ["siteSettings"],
   });
   /* Live fetches brand strings for visual editing; the shape is the same. */
-  const settings = data as SITE_SETTINGS_QUERY_RESULT;
+  const settings = data as unknown as SITE_SETTINGS_QUERY_RESULT;
   if (!settings) {
     console.warn("Site settings have not been published yet; using defaults.");
     return FALLBACK;
   }
   return {
-    name: settings.name,
+    name: settings.name ?? FALLBACK.name,
     parent: settings.parent ?? undefined,
     city: settings.city ?? undefined,
-    founded: settings.founded,
-    positioning: settings.positioning,
-    email: settings.email,
+    founded: settings.founded ?? FALLBACK.founded,
+    positioning: settings.positioning ?? FALLBACK.positioning,
+    email: settings.email ?? FALLBACK.email,
     phone: settings.phone ?? undefined,
     website: settings.website ?? undefined,
     works: settings.works ?? undefined,
