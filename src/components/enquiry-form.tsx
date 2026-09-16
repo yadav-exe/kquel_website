@@ -2,9 +2,7 @@
 
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
-import { CATEGORIES } from "@/lib/catalog";
 import { submitEnquiry } from "@/app/actions/enquiry";
-import { CONTACT } from "@/lib/site";
 
 type Field = "name" | "email" | "phone" | "collection" | "message";
 type Values = Record<Field | "product", string>;
@@ -59,7 +57,19 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
-export default function EnquiryForm() {
+export type EnquiryCollection = {
+  name: string;
+  slug: string;
+  products: { name: string; slug: string; sizes: string[] }[];
+};
+
+export default function EnquiryForm({
+  collections,
+  contactEmail,
+}: {
+  collections: EnquiryCollection[];
+  contactEmail: string;
+}) {
   const params = useSearchParams();
   const [values, setValues] = useState<Values>(() => ({
     ...EMPTY,
@@ -86,9 +96,9 @@ export default function EnquiryForm() {
   }, [attempt, errorCount]);
 
   const products = useMemo(() => {
-    const category = CATEGORIES.find((c) => c.slug === values.collection);
+    const category = collections.find((c) => c.slug === values.collection);
     return category?.products ?? [];
-  }, [values.collection]);
+  }, [collections, values.collection]);
 
   const set = (field: keyof Values) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -213,7 +223,7 @@ export default function EnquiryForm() {
             className={`${fieldClasses} cursor-pointer`}
           >
             <option value="" className="bg-surface">Select a collection</option>
-            {CATEGORIES.map((category) => (
+            {collections.map((category) => (
               <option
                 key={category.slug} value={category.slug}
                 className="bg-surface text-foreground"
@@ -287,10 +297,10 @@ export default function EnquiryForm() {
         >
           {sendError}{" "}
           <a
-            href={`mailto:${CONTACT.email}`}
+            href={`mailto:${contactEmail}`}
             className="underline underline-offset-4 transition-colors duration-300 hover:text-violet-ink"
           >
-            {CONTACT.email}
+            {contactEmail}
           </a>
         </div>
       )}

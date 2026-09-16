@@ -1,4 +1,5 @@
-import Image from "next/image";
+import SanityPicture from "@/components/sanity-picture";
+import { imageUrl } from "@/sanity/image";
 import Link from "next/link";
 import ProductBlueprint from "@/components/product-blueprint";
 import type { Category, Product } from "@/lib/catalog";
@@ -40,7 +41,7 @@ export default function ProductDetail({
   category: Category;
   related: Product[];
 }) {
-  const image = product.image ?? category.src;
+  const image = product.image ?? category.cover;
   const specGroups =
     product.specGroups ??
     [{ title: "Specification", items: product.features }];
@@ -52,6 +53,7 @@ export default function ProductDetail({
     "@type": "Product",
     name: product.name,
     description: product.story,
+    image: imageUrl(image),
     brand: { "@type": "Brand", name: "KQUEL" },
     category: category.name,
     additionalProperty: [
@@ -78,9 +80,9 @@ export default function ProductDetail({
         {/* The photograph holds while the specification scrolls beside it. */}
         <div className="lg:sticky lg:top-28 lg:self-start">
           <div className="relative aspect-[4/5] overflow-hidden border border-chrome/15 bg-surface">
-            <Image
-              src={image}
-              alt={product.image ? product.name : category.alt}
+            <SanityPicture
+              image={image}
+              alt={product.image ? product.name : undefined}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
@@ -184,8 +186,8 @@ export default function ProductDetail({
               const card = (
                 <>
                   <div className="relative aspect-[4/5] overflow-hidden bg-void">
-                    <Image
-                      src={item.image ?? category.src}
+                    <SanityPicture
+                      image={item.image ?? category.cover}
                       alt={item.image ? item.name : ""}
                       fill
                       sizes="(max-width: 640px) 100vw, 33vw"

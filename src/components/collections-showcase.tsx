@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -9,9 +8,10 @@ import {
   useScroll,
   useTransform,
 } from "motion/react";
-import { CATEGORIES as COLLECTIONS, type Category } from "@/lib/catalog";
+import SanityPicture from "@/components/sanity-picture";
+import type { CategoryListing } from "@/lib/catalog";
 
-function CollectionTile({ collection }: { collection: Category }) {
+function CollectionTile({ collection }: { collection: CategoryListing }) {
   return (
     <Link
       href={`/collections/${collection.slug}`}
@@ -20,9 +20,8 @@ function CollectionTile({ collection }: { collection: Category }) {
     >
       {/* Eager: the track sits off-viewport horizontally, so lazy loading
           would defer these until mid-pan and they would pop in. */}
-      <Image
-        src={collection.src}
-        alt={collection.alt}
+      <SanityPicture
+        image={collection.cover}
         fill
         loading="eager"
         sizes="(max-width: 768px) 80vw, 46vw"
@@ -57,7 +56,11 @@ function CollectionTile({ collection }: { collection: Category }) {
   );
 }
 
-export default function CollectionsShowcase() {
+export default function CollectionsShowcase({
+  collections: COLLECTIONS,
+}: {
+  collections: CategoryListing[];
+}) {
   const runwayRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);

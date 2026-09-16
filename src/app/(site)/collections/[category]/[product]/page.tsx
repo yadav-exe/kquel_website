@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductDetail from "@/components/product-detail";
-import { CATEGORIES, getCategory } from "@/lib/catalog";
+import { getCategoriesForBuild, getCategory } from "@/lib/catalog";
 
 type Params = { category: string; product: string };
 
-/* Only products with written copy get a page. The rest are added as their
-   detail copy is prepared. */
-export function generateStaticParams(): Params[] {
-  return CATEGORIES.flatMap((category) =>
+/* Only products with written copy get a page. The rest are listed and gain
+   a page the moment an editor writes their introduction. */
+export async function generateStaticParams(): Promise<Params[]> {
+  const categories = await getCategoriesForBuild();
+  return categories.flatMap((category) =>
     category.products
       .filter((product) => product.story)
       .map((product) => ({
@@ -18,7 +19,7 @@ export function generateStaticParams(): Params[] {
   );
 }
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 const DESCRIPTION_LIMIT = 160;
 /* Below this, whole sentences leave most of a search snippet empty. */
@@ -42,21 +43,31 @@ function describe(story: string) {
   return `${cut.slice(0, cut.lastIndexOf(" ")).replace(/[\s,;:—–-]+$/, "")}…`;
 }
 
+async function load(params: Promise<Params>) {
+  const { category: categorySlug, product: productSlug } = await params;
+  const category = await getCategory(categorySlug);
+  const product = category?.products.find((p) => p.slug === productSlug);
+  /* A listed piece without its copy has no page yet. */
+  if (!category || !product?.story) return undefined;
+  return { category, product };
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const { category: categorySlug, product: productSlug } = await params;
-  const category = getCategory(categorySlug);
-  const product = category?.products.find((p) => p.slug === productSlug);
+  const found = await load(params);
+  if (!found) return {};
 
-  if (!category || !product) return {};
-
+  const { category, product } = found;
+  const { seo } = product;
   return {
-    title: `${product.name} — KQUEL ${category.name}`,
-    description: product.story && describe(product.story),
+    title: seo?.metaTitle ?? `${product.name} — KQUEL ${category.name}`,
+    description:
+      seo?.metaDescription ?? (product.story && describe(product.story)),
     alternates: { canonical: `/collections/${category.slug}/${product.slug}` },
+    robots: seo?.noIndex ? { index: false, follow: false } : undefined,
   };
 }
 
@@ -65,12 +76,10 @@ export default async function ProductPage({
 }: {
   params: Promise<Params>;
 }) {
-  const { category: categorySlug, product: productSlug } = await params;
-  const category = getCategory(categorySlug);
-  const product = category?.products.find((p) => p.slug === productSlug);
+  const found = await load(params);
+  if (!found) notFound();
 
-  if (!category || !product) notFound();
-
+  const { category, product } = found;
   const related = category.products
     .filter((p) => p.slug !== product.slug)
     .slice(0, 3);

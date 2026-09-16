@@ -1,5 +1,5 @@
-import type { StaticImageData } from "next/image";
-import type { Product } from "./catalog";
+import type { SanityImage } from "@/sanity/image";
+import type { Product, Seo } from "./catalog";
 
 const WORDS = [
   "zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
@@ -15,7 +15,7 @@ export type TubInput = {
   slug: string;
   configuration: string;
   sizes: string[];
-  image?: StaticImageData;
+  image?: SanityImage;
   /** Drawing shape. Omit for products we cannot draw truthfully. */
   form?: "square" | "rect" | "round" | "corner";
   panel?: string;
@@ -42,6 +42,7 @@ export type TubInput = {
    * technical drawing.
    */
   story?: string;
+  seo?: Seo;
 };
 
 /* One product, assembled from its catalogue specification. Features, spec
@@ -49,7 +50,7 @@ export type TubInput = {
    the same numbers, so a page can never contradict the specification. */
 export function tub(input: TubInput): Product {
   const {
-    name, slug, configuration, sizes, image, form,
+    name, slug, configuration, sizes, image, form, seo,
     panel = "Two side panel",
     pumps = 1, jets = 6, spineJets = 2, bubbleJets = 12,
     pillows = 1, lights = 1,
@@ -146,7 +147,7 @@ export function tub(input: TubInput): Product {
     : undefined;
 
   return {
-    name, slug, configuration, sizes, image, story, specGroups, blueprint,
+    name, slug, configuration, sizes, image, story, specGroups, blueprint, seo,
     features: [
       ...construction, ...hydrotherapy, ...airSystem,
       ...fittings, ...comfort, ...controls,
@@ -167,10 +168,11 @@ export function unit(input: {
   slug: string;
   configuration: string;
   sizes: string[];
-  image?: StaticImageData;
-  story: string;
+  image?: SanityImage;
+  story?: string;
   highlights?: { label: string; value: string }[];
   specGroups: { title: string; items: string[] }[];
+  seo?: Seo;
 }): Product {
   const { specGroups, sizes } = input;
   return {

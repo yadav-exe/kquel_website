@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import SanityPicture from "@/components/sanity-picture";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
@@ -368,10 +368,10 @@ export default function CatalogView({
               <div
                 className={`relative overflow-hidden bg-void ${LAYOUTS[layout].media} ${MEDIA_FIT}`}
               >
-                <Image
-                  /* Photography is still missing for a few lines; the
-                     collection cover stands in so the grid stays whole. */
-                  src={product.image ?? category.src}
+                <SanityPicture
+                  /* A piece is only listed with its own photograph; the
+                     cover is a belt-and-braces fallback. */
+                  image={product.image ?? category.cover}
                   alt={product.image ? product.name : ""}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"

@@ -1,14 +1,15 @@
 import type { MetadataRoute } from "next";
-import { SITE } from "@/lib/site";
+import { getSiteSettings } from "@/lib/site";
 
 /* Replaces the generated site.webmanifest, which shipped with an empty name,
    icon paths pointing at the site root rather than /favicon, and white
    theme colours that would flash against a near-black site. */
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const site = await getSiteSettings();
   return {
-    name: `${SITE.name} — ${SITE.positioning}`,
-    short_name: SITE.name,
-    description: SITE.positioning,
+    name: `${site.name} — ${site.positioning}`,
+    short_name: site.name,
+    description: site.positioning,
     start_url: "/",
     display: "standalone",
     background_color: "#0b0b0f",
