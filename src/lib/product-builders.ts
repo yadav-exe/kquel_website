@@ -43,6 +43,7 @@ export type TubInput = {
    */
   story?: string;
   seo?: Seo;
+  updatedAt: Date;
 };
 
 /* One product, assembled from its catalogue specification. Features, spec
@@ -50,7 +51,7 @@ export type TubInput = {
    the same numbers, so a page can never contradict the specification. */
 export function tub(input: TubInput): Product {
   const {
-    name, slug, configuration, sizes, image, form, seo,
+    name, slug, configuration, sizes, image, form, seo, updatedAt,
     panel = "Two side panel",
     pumps = 1, jets = 6, spineJets = 2, bubbleJets = 12,
     pillows = 1, lights = 1,
@@ -147,7 +148,7 @@ export function tub(input: TubInput): Product {
     : undefined;
 
   return {
-    name, slug, configuration, sizes, image, story, specGroups, blueprint, seo,
+    name, slug, configuration, sizes, image, story, specGroups, blueprint, seo, updatedAt,
     features: [
       ...construction, ...hydrotherapy, ...airSystem,
       ...fittings, ...comfort, ...controls,
@@ -173,6 +174,7 @@ export function unit(input: {
   highlights?: { label: string; value: string }[];
   specGroups: { title: string; items: string[] }[];
   seo?: Seo;
+  updatedAt: Date;
 }): Product {
   const { specGroups, sizes } = input;
   return {

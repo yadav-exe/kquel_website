@@ -11,6 +11,7 @@ const SEO = /* groq */ `seo{ ..., shareImage ${IMAGE} }`;
 
 const PRODUCT = /* groq */ `
   _id,
+  _updatedAt,
   name,
   "slug": slug.current,
   configuration,
@@ -34,6 +35,7 @@ const LISTED = /* groq */ `published == true && defined(image)`;
 export const COLLECTIONS_QUERY = defineQuery(`
   *[_type == "collection"] | order(order asc) {
     _id,
+    _updatedAt,
     name,
     "slug": slug.current,
     order,

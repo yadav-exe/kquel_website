@@ -1,23 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
+import SanityPicture from "@/components/sanity-picture";
+import type { HomePage } from "@/lib/pages";
 
-type Discipline = {
-  label: string;
-  copy: string;
-};
-
-const DISCIPLINES: Discipline[] = [
-  {
-    label: "Cryotherapy",
-    copy: "Recovery through precisely controlled cold. Sub-zero cycles are calibrated to the body, reducing inflammation and sharpening the return to baseline.",
-  },
-  {
-    label: "Hydrotherapy",
-    copy: "Computational fluid dynamics used to master water pressure and temperature, ensuring a therapeutic ritual that transcends standard bathing.",
-  },
-];
+type InnovationContent = HomePage["innovation"];
 
 const EASE = [0.19, 1, 0.22, 1] as const;
 
@@ -42,7 +29,11 @@ function WaveMark() {
   );
 }
 
-export default function Innovation() {
+export default function Innovation({
+  innovation,
+}: {
+  innovation: InnovationContent;
+}) {
   const reduceMotion = useReducedMotion();
   const animate = !reduceMotion;
 
@@ -67,19 +58,19 @@ export default function Innovation() {
             {...rise(0.08)}
             className="mt-6 max-w-[16ch] font-display text-[clamp(1.9rem,3.4vw,2.9rem)] leading-tight text-foreground"
           >
-            Synthesis of science and serenity.
+            {innovation.heading}
           </motion.h2>
 
           <dl className="mt-12 border-t border-chrome/15">
-            {DISCIPLINES.map((discipline, i) => (
+            {innovation.disciplines.map((discipline, i) => (
               <motion.div
-                key={discipline.label}
+                key={discipline.title}
                 {...rise(0.18 + i * 0.1)}
                 className="border-b border-chrome/15 py-7"
               >
-                <dt className="label-caps text-violet-ink">{discipline.label}</dt>
+                <dt className="label-caps text-violet-ink">{discipline.title}</dt>
                 <dd className="mt-4 max-w-[46ch] text-[15px] leading-relaxed text-chrome/85">
-                  {discipline.copy}
+                  {discipline.body}
                 </dd>
               </motion.div>
             ))}
@@ -90,9 +81,8 @@ export default function Innovation() {
           {/* Chrome hairline frame with the image inset, per DESIGN.md. */}
           <div className="border border-chrome/20 p-3 md:p-4">
             <div className="relative aspect-square overflow-hidden">
-              <Image
-                src="https://images.pexels.com/photos/9821737/pexels-photo-9821737.jpeg?auto=compress&cs=tinysrgb&w=1600"
-                alt="Macro view of water droplets beading on a brushed metal surface"
+              <SanityPicture
+                image={innovation.image}
                 fill
                 sizes="(max-width: 768px) 100vw, 45vw"
                 className="object-cover"

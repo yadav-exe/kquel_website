@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
+import { SITE_URL } from "@/lib/seo";
+import { getSiteSettings } from "@/lib/site";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -12,11 +14,23 @@ const hanken = Hanken_Grotesk({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "KQUEL — Designing Spaces Where Wellness Becomes a Way of Life",
-  description:
-    "KQUEL crafts cinematic wellness spaces and bathing collections — architecture, stone, and water composed into a private sanctuary you live in every day.",
-};
+/* Site-wide defaults. metadataBase turns every relative canonical, share
+   image and Open Graph url below into an absolute one. Pages set their own
+   title and description; these only stand in where one does not. */
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSiteSettings();
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: `${site.name} — ${site.positioning}`,
+      template: "%s",
+    },
+    description: site.positioning,
+    applicationName: site.name,
+    openGraph: { type: "website", siteName: site.name, locale: "en_IN" },
+    twitter: { card: "summary_large_image" },
+  };
+}
 
 /* Pinch-zoom stays available — capping or disabling user scaling fails
    WCAG 1.4.4. themeColor keeps the browser chrome from flashing white. */

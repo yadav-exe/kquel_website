@@ -2,14 +2,22 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import EnquiryForm from "@/components/enquiry-form";
 import { getCategories } from "@/lib/catalog";
+import { pageMetadata } from "@/lib/seo";
 import { contactDetails, getSiteSettings } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Contact — KQUEL",
-  description:
-    "Enquire about KQUEL whirlpool bathtubs, hot spas, saunas, steam cabins, showers and pools. Manufactured in New Delhi since 1998.",
-  alternates: { canonical: "/contact" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [site, categories] = await Promise.all([
+    getSiteSettings(),
+    getCategories(),
+  ]);
+  const names = categories.map((c) => c.name.toLowerCase());
+  return pageMetadata({
+    title: `Contact — ${site.name}`,
+    description: `Enquire about ${site.name} ${names.join(", ")}. ${site.positioning}`,
+    path: "/contact",
+    site,
+  });
+}
 
 export default async function ContactPage() {
   const [site, categories] = await Promise.all([
