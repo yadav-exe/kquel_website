@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import type { AboutPage } from "@/lib/pages";
 
 const EASE = [0.19, 1, 0.22, 1] as const;
 
@@ -14,7 +15,11 @@ const LAYERS = [
   { y: 186, h: 40, label: "Glass-reinforced plastic", note: "Layer 03", grp: true },
 ];
 
-export default function MaterialSection() {
+export default function MaterialSection({
+  material,
+}: {
+  material: AboutPage["material"];
+}) {
   const reduceMotion = useReducedMotion();
   const still = Boolean(reduceMotion);
 
@@ -39,23 +44,18 @@ export default function MaterialSection() {
     >
       <div className="grid grid-cols-1 gap-14 lg:grid-cols-[minmax(0,26rem)_1fr] lg:gap-20">
         <div className="lg:pt-6">
-          <p className="label-caps text-violet-ink">Material</p>
+          <p className="label-caps text-violet-ink">{material.eyebrow}</p>
           <h2
             id="material"
             className="mt-6 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight text-foreground"
           >
-            Three layers deep.
+            {material.heading}
           </h2>
           <p className="mt-7 max-w-[46ch] text-base leading-relaxed text-chrome/85">
-            Under every acrylic shell we lay three layers of glass-reinforced
-            plastic, bonded until the shell and its reinforcement behave as one
-            body rather than four.
+            {material.lead}
           </p>
           <p className="mt-5 max-w-[46ch] text-base leading-relaxed text-chrome/70">
-            It is why the rim of a KQUEL bath does not flex when you lean on it,
-            why the shell holds its line through a decade of heating and
-            cooling, and why the tub is heavier than it looks when it arrives.
-            Strength you will never see is still the part you feel.
+            {material.body}
           </p>
         </div>
 

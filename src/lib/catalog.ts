@@ -62,6 +62,7 @@ export type Product = {
     };
   };
   seo?: Seo;
+  updatedAt: Date;
 };
 
 export type Category = {
@@ -73,6 +74,7 @@ export type Category = {
   products: Product[];
   editorial: CategoryEditorial;
   seo?: Seo;
+  updatedAt: Date;
 };
 
 /* The collection without its copy: what the tiles and the grid need. */
@@ -97,6 +99,7 @@ function buildProduct(doc: ProductDoc): Product {
     image: orUndefined(doc.image),
     story: orUndefined(doc.story),
     seo: orUndefined(doc.seo),
+    updatedAt: new Date(doc._updatedAt),
   };
 
   if (doc.kind === "tub") {
@@ -151,6 +154,7 @@ function buildCategory(doc: CollectionDoc, position: number): Category {
       },
     },
     seo: orUndefined(doc.seo),
+    updatedAt: new Date(doc._updatedAt),
   };
 }
 

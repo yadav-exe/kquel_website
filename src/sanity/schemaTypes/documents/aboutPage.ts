@@ -14,6 +14,7 @@ const section = (
     title,
     type: "object",
     group,
+    validation: (rule) => rule.required(),
     fields: [
       defineField({
         name: "eyebrow",
@@ -58,6 +59,7 @@ export const aboutPageType = defineType({
       name: "hero",
       title: "Hero",
       type: "object",
+      validation: (rule) => rule.required(),
       group: "hero",
       fields: [
         defineField({
@@ -143,6 +145,7 @@ export const aboutPageType = defineType({
       name: "closing",
       title: "Closing",
       type: "object",
+      validation: (rule) => rule.required(),
       group: "closing",
       fields: [
         defineField({

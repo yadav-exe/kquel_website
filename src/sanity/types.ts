@@ -61,7 +61,7 @@ export type AboutPage = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  hero?: {
+  hero: {
     eyebrow?: string;
     headline: string;
     tagline: string;
@@ -74,7 +74,7 @@ export type AboutPage = {
       _type: "image";
     };
   };
-  origin?: {
+  origin: {
     eyebrow: string;
     heading: string;
     lead: string;
@@ -86,7 +86,7 @@ export type AboutPage = {
       _key: string;
     } & Figure
   >;
-  principles?: {
+  principles: {
     eyebrow: string;
     heading: string;
     items: Array<
@@ -95,7 +95,7 @@ export type AboutPage = {
       } & Point
     >;
   };
-  process?: {
+  process: {
     eyebrow: string;
     heading: string;
     items: Array<
@@ -104,19 +104,19 @@ export type AboutPage = {
       } & Point
     >;
   };
-  material?: {
+  material: {
     eyebrow: string;
     heading: string;
     lead: string;
     body: string;
   };
-  promise?: {
+  promise: {
     eyebrow: string;
     heading: string;
     lead: string;
     body: string;
   };
-  closing?: {
+  closing: {
     quote: string;
     attribution?: string;
   };
@@ -159,7 +159,7 @@ export type HomePage = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  hero?: {
+  hero: {
     statement: string;
     taglineLead: string;
     taglineAccent: string;
@@ -173,8 +173,8 @@ export type HomePage = {
       _type: "image";
     };
   };
-  ethos?: {
-    cards?: Array<{
+  ethos: {
+    cards: Array<{
       title: string;
       copy: string;
       image: {
@@ -190,7 +190,7 @@ export type HomePage = {
     closingLead: string;
     closingAccent: string;
   };
-  archetypes?: Array<{
+  archetypes: Array<{
     collection: CollectionReference;
     title?: string;
     image?: {
@@ -203,12 +203,12 @@ export type HomePage = {
     };
     _key: string;
   }>;
-  signaturePieces?: Array<{
+  signaturePieces: Array<{
     product: ProductReference;
     copy: string;
     _key: string;
   }>;
-  innovation?: {
+  innovation: {
     heading: string;
     disciplines: Array<
       {
@@ -224,11 +224,11 @@ export type HomePage = {
       _type: "image";
     };
   };
-  closing?: {
+  closing: {
     heading: string;
     body: string;
     statement: string;
-    disciplines?: Array<{
+    disciplines: Array<{
       label: string;
       name: string;
       collection: CollectionReference;
@@ -486,9 +486,10 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/queries.ts
 // Variable: COLLECTIONS_QUERY
-// Query: *[_type == "collection"] | order(order asc) {    _id,    name,    "slug": slug.current,    order,    tagline,    cover {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }},    intro,    reasons,    difference,    seo{ ..., shareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} },    "products": *[_type == "product" && collection._ref == ^._id && published == true && defined(image)]      | order(order asc) {   _id,  name,  "slug": slug.current,  configuration,  sizes,  order,  kind,  published,  image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }},  form, panel, shellNote,  pumps, jets, spineJets, bubbleJets, pillows, lights,  ratedAirPump, audio, controlsStandard, extras,  highlights, specGroups,  story,  seo{ ..., shareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} } }  }
+// Query: *[_type == "collection"] | order(order asc) {    _id,    _updatedAt,    name,    "slug": slug.current,    order,    tagline,    cover {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }},    intro,    reasons,    difference,    seo{ ..., shareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} },    "products": *[_type == "product" && collection._ref == ^._id && published == true && defined(image)]      | order(order asc) {   _id,  _updatedAt,  name,  "slug": slug.current,  configuration,  sizes,  order,  kind,  published,  image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }},  form, panel, shellNote,  pumps, jets, spineJets, bubbleJets, pillows, lights,  ratedAirPump, audio, controlsStandard, extras,  highlights, specGroups,  story,  seo{ ..., shareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} } }  }
 export type COLLECTIONS_QUERY_RESULT = Array<{
   _id: string;
+  _updatedAt: string;
   name: string;
   slug: string;
   order: number;
@@ -548,6 +549,7 @@ export type COLLECTIONS_QUERY_RESULT = Array<{
   } | null;
   products: Array<{
     _id: string;
+    _updatedAt: string;
     name: string;
     slug: string;
     configuration: string;
@@ -615,202 +617,74 @@ export type COLLECTIONS_QUERY_RESULT = Array<{
       noIndex?: boolean;
     } | null;
   }>;
-}>;
-
-// Source: src/sanity/queries.ts
-// Variable: COLLECTION_QUERY
-// Query: *[_type == "collection" && slug.current == $slug][0] {    _id,    name,    "slug": slug.current,    order,    tagline,    cover {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }},    intro,    reasons,    difference,    seo{ ..., shareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} },    "products": *[_type == "product" && collection._ref == ^._id && published == true && defined(image)]      | order(order asc) {   _id,  name,  "slug": slug.current,  configuration,  sizes,  order,  kind,  published,  image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }},  form, panel, shellNote,  pumps, jets, spineJets, bubbleJets, pillows, lights,  ratedAirPump, audio, controlsStandard, extras,  highlights, specGroups,  story,  seo{ ..., shareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} } }  }
-export type COLLECTION_QUERY_RESULT = {
-  _id: string;
-  name: string;
-  slug: string;
-  order: number;
-  tagline: string;
-  cover: {
-    asset: {
-      _id: string;
-      url: string;
-      metadata: {
-        dimensions: SanityImageDimensions | null;
-        lqip: string | null;
-      } | null;
-    } | null;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt: string;
-    _type: "image";
-  };
-  intro: string;
-  reasons: {
-    eyebrow: string;
-    heading: string;
-    items: Array<
-      {
-        _key: string;
-      } & Point
-    >;
-  } | null;
-  difference: {
-    heading: string;
-    items: Array<
-      {
-        _key: string;
-      } & Point
-    >;
-  } | null;
-  seo: {
-    _type: "seo";
-    metaTitle?: string;
-    metaDescription?: string;
-    shareImage: {
-      asset: {
-        _id: string;
-        url: string;
-        metadata: {
-          dimensions: SanityImageDimensions | null;
-          lqip: string | null;
-        } | null;
-      } | null;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    } | null;
-    noIndex?: boolean;
-  } | null;
-  products: Array<{
-    _id: string;
-    name: string;
-    slug: string;
-    configuration: string;
-    sizes: Array<string> | null;
-    order: number;
-    kind: "tub" | "unit";
-    published: boolean | null;
-    image: {
-      asset: {
-        _id: string;
-        url: string;
-        metadata: {
-          dimensions: SanityImageDimensions | null;
-          lqip: string | null;
-        } | null;
-      } | null;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt: string;
-      _type: "image";
-    } | null;
-    form: "corner" | "rect" | "round" | "square" | null;
-    panel: string | null;
-    shellNote: string | null;
-    pumps: number | null;
-    jets: number | null;
-    spineJets: number | null;
-    bubbleJets: number | null;
-    pillows: number | null;
-    lights: number | null;
-    ratedAirPump: boolean | null;
-    audio: boolean | null;
-    controlsStandard: boolean | null;
-    extras: Array<string> | null;
-    highlights: Array<{
-      label: string;
-      value: string;
-      _key: string;
-    }> | null;
-    specGroups: Array<{
-      title: string;
-      items: Array<string>;
-      _key: string;
-    }> | null;
-    story: string | null;
-    seo: {
-      _type: "seo";
-      metaTitle?: string;
-      metaDescription?: string;
-      shareImage: {
-        asset: {
-          _id: string;
-          url: string;
-          metadata: {
-            dimensions: SanityImageDimensions | null;
-            lqip: string | null;
-          } | null;
-        } | null;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        _type: "image";
-      } | null;
-      noIndex?: boolean;
-    } | null;
-  }>;
-} | null;
-
-// Source: src/sanity/queries.ts
-// Variable: COLLECTION_PATHS_QUERY
-// Query: *[_type == "collection" && defined(slug.current)]{ "category": slug.current }
-export type COLLECTION_PATHS_QUERY_RESULT = Array<{
-  category: string;
-}>;
-
-// Source: src/sanity/queries.ts
-// Variable: PRODUCT_PATHS_QUERY
-// Query: *[_type == "product" && published == true && defined(image) && defined(story) && defined(slug.current)]{    "category": collection->slug.current,    "product": slug.current  }
-export type PRODUCT_PATHS_QUERY_RESULT = Array<{
-  category: string;
-  product: string;
 }>;
 
 // Source: src/sanity/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_id == "siteSettings"][0] {    name, parent, city, founded, positioning,    email, phone, website, works, socialLinks,    defaultShareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }}  }
-export type SITE_SETTINGS_QUERY_RESULT =
-  | {
-      name: null;
-      parent: null;
-      city: null;
-      founded: null;
-      positioning: null;
-      email: null;
-      phone: null;
-      website: null;
-      works: null;
-      socialLinks: null;
-      defaultShareImage: null;
-    }
-  | {
-      name: string;
-      parent: null;
-      city: null;
-      founded: null;
-      positioning: null;
-      email: null;
-      phone: null;
-      website: null;
-      works: null;
-      socialLinks: null;
-      defaultShareImage: null;
-    }
-  | {
-      name: string;
-      parent: string | null;
-      city: string | null;
-      founded: number;
-      positioning: string;
-      email: string;
-      phone: string | null;
-      website: Link | null;
-      works: string | null;
-      socialLinks: Array<
-        {
-          _key: string;
-        } & Link
-      > | null;
-      defaultShareImage: {
+// Query: *[_type == "siteSettings" && _id == "siteSettings"][0] {    name, parent, city, founded, positioning,    email, phone, website, works, socialLinks,    defaultShareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }}  }
+export type SITE_SETTINGS_QUERY_RESULT = {
+  name: string;
+  parent: string | null;
+  city: string | null;
+  founded: number;
+  positioning: string;
+  email: string;
+  phone: string | null;
+  website: Link | null;
+  works: string | null;
+  socialLinks: Array<
+    {
+      _key: string;
+    } & Link
+  > | null;
+  defaultShareImage: {
+    asset: {
+      _id: string;
+      url: string;
+      metadata: {
+        dimensions: SanityImageDimensions | null;
+        lqip: string | null;
+      } | null;
+    } | null;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+} | null;
+
+// Source: src/sanity/queries.ts
+// Variable: HOME_QUERY
+// Query: *[_type == "homePage" && _id == "homePage"][0] {    hero{ statement, taglineLead, taglineAccent, cta, image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} },    ethos{      cards[]{ _key, title, copy, image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} },      closingLead, closingAccent    },    archetypes[]{      _key,      title,      image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }},      collection->{ name, "slug": slug.current, tagline, cover {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} }    },    signaturePieces[]{      _key,      copy,      product->{        name,        "slug": slug.current,        configuration,        sizes,        story,        image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }},        "category": collection->slug.current      }    },    innovation{ heading, disciplines, image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} },    closing{      heading, body, statement,      disciplines[]{ _key, label, name, "slug": collection->slug.current }    },    seo{ ..., shareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} }  }
+export type HOME_QUERY_RESULT = {
+  hero: {
+    statement: string;
+    taglineLead: string;
+    taglineAccent: string;
+    cta: string;
+    image: {
+      asset: {
+        _id: string;
+        url: string;
+        metadata: {
+          dimensions: SanityImageDimensions | null;
+          lqip: string | null;
+        } | null;
+      } | null;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    };
+  };
+  ethos: {
+    cards: Array<{
+      _key: string;
+      title: string;
+      copy: string;
+      image: {
         asset: {
           _id: string;
           url: string;
@@ -822,468 +696,226 @@ export type SITE_SETTINGS_QUERY_RESULT =
         media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
-        alt?: string;
+        alt: string;
+        _type: "image";
+      };
+    }>;
+    closingLead: string;
+    closingAccent: string;
+  };
+  archetypes: Array<{
+    _key: string;
+    title: string | null;
+    image: {
+      asset: {
+        _id: string;
+        url: string;
+        metadata: {
+          dimensions: SanityImageDimensions | null;
+          lqip: string | null;
+        } | null;
+      } | null;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt: string;
+      _type: "image";
+    } | null;
+    collection: {
+      name: string;
+      slug: string;
+      tagline: string;
+      cover: {
+        asset: {
+          _id: string;
+          url: string;
+          metadata: {
+            dimensions: SanityImageDimensions | null;
+            lqip: string | null;
+          } | null;
+        } | null;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt: string;
+        _type: "image";
+      };
+    };
+  }>;
+  signaturePieces: Array<{
+    _key: string;
+    copy: string;
+    product: {
+      name: string;
+      slug: string;
+      configuration: string;
+      sizes: Array<string> | null;
+      story: string | null;
+      image: {
+        asset: {
+          _id: string;
+          url: string;
+          metadata: {
+            dimensions: SanityImageDimensions | null;
+            lqip: string | null;
+          } | null;
+        } | null;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt: string;
         _type: "image";
       } | null;
-    }
-  | null;
-
-// Source: src/sanity/queries.ts
-// Variable: HOME_QUERY
-// Query: *[_id == "homePage"][0] {    hero{ statement, taglineLead, taglineAccent, cta, image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} },    ethos{      cards[]{ _key, title, copy, image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} },      closingLead, closingAccent    },    archetypes[]{      _key,      title,      image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }},      collection->{ name, "slug": slug.current, tagline, cover {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} }    },    signaturePieces[]{      _key,      copy,      product->{        name,        "slug": slug.current,        configuration,        sizes,        story,        image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }},        "category": collection->slug.current      }    },    innovation{ heading, disciplines, image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} },    closing{      heading, body, statement,      disciplines[]{ _key, label, name, "slug": collection->slug.current }    },    seo{ ..., shareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} }  }
-export type HOME_QUERY_RESULT =
-  | {
-      hero: null;
-      ethos: null;
-      archetypes: null;
-      signaturePieces: null;
-      innovation: null;
-      closing: null;
-      seo: null;
-    }
-  | {
-      hero: null;
-      ethos: null;
-      archetypes: null;
-      signaturePieces: null;
-      innovation: null;
-      closing: null;
-      seo: {
-        _type: "seo";
-        metaTitle?: string;
-        metaDescription?: string;
-        shareImage: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
-        } | null;
-        noIndex?: boolean;
-      } | null;
-    }
-  | {
-      hero: {
-        statement: null;
-        taglineLead: null;
-        taglineAccent: null;
-        cta: null;
-        image: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: "image";
-        };
-      } | null;
-      ethos: null;
-      archetypes: null;
-      signaturePieces: null;
-      innovation: null;
-      closing: {
-        heading: null;
-        body: null;
-        statement: null;
-        disciplines: null;
-      } | null;
-      seo: {
-        _type: "seo";
-        metaTitle?: string;
-        metaDescription?: string;
-        shareImage: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
-        } | null;
-        noIndex?: boolean;
-      } | null;
-    }
-  | {
-      hero: {
-        statement: string;
-        taglineLead: string;
-        taglineAccent: string;
-        cta: string;
-        image: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: "image";
-        };
-      } | null;
-      ethos: {
-        cards: Array<{
-          _key: string;
-          title: string;
-          copy: string;
-          image: {
-            asset: {
-              _id: string;
-              url: string;
-              metadata: {
-                dimensions: SanityImageDimensions | null;
-                lqip: string | null;
-              } | null;
-            } | null;
-            media?: unknown;
-            hotspot?: SanityImageHotspot;
-            crop?: SanityImageCrop;
-            alt: string;
-            _type: "image";
-          };
-        }> | null;
-        closingLead: string;
-        closingAccent: string;
-      } | null;
-      archetypes: Array<{
+      category: string;
+    };
+  }>;
+  innovation: {
+    heading: string;
+    disciplines: Array<
+      {
         _key: string;
-        title: string | null;
-        image: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt: string;
-          _type: "image";
+      } & Point
+    >;
+    image: {
+      asset: {
+        _id: string;
+        url: string;
+        metadata: {
+          dimensions: SanityImageDimensions | null;
+          lqip: string | null;
         } | null;
-        collection: {
-          name: string;
-          slug: string;
-          tagline: string;
-          cover: {
-            asset: {
-              _id: string;
-              url: string;
-              metadata: {
-                dimensions: SanityImageDimensions | null;
-                lqip: string | null;
-              } | null;
-            } | null;
-            media?: unknown;
-            hotspot?: SanityImageHotspot;
-            crop?: SanityImageCrop;
-            alt: string;
-            _type: "image";
-          };
-        };
-      }> | null;
-      signaturePieces: Array<{
-        _key: string;
-        copy: string;
-        product: {
-          name: string;
-          slug: string;
-          configuration: string;
-          sizes: Array<string> | null;
-          story: string | null;
-          image: {
-            asset: {
-              _id: string;
-              url: string;
-              metadata: {
-                dimensions: SanityImageDimensions | null;
-                lqip: string | null;
-              } | null;
-            } | null;
-            media?: unknown;
-            hotspot?: SanityImageHotspot;
-            crop?: SanityImageCrop;
-            alt: string;
-            _type: "image";
-          } | null;
-          category: string;
-        };
-      }> | null;
-      innovation: {
-        heading: string;
-        disciplines: Array<
-          {
-            _key: string;
-          } & Point
-        >;
-        image: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt: string;
-          _type: "image";
-        };
       } | null;
-      closing: {
-        heading: string;
-        body: string;
-        statement: string;
-        disciplines: Array<{
-          _key: string;
-          label: string;
-          name: string;
-          slug: string;
-        }> | null;
-      } | null;
-      seo: {
-        _type: "seo";
-        metaTitle?: string;
-        metaDescription?: string;
-        shareImage: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt: string;
+      _type: "image";
+    };
+  };
+  closing: {
+    heading: string;
+    body: string;
+    statement: string;
+    disciplines: Array<{
+      _key: string;
+      label: string;
+      name: string;
+      slug: string;
+    }>;
+  };
+  seo: {
+    _type: "seo";
+    metaTitle?: string;
+    metaDescription?: string;
+    shareImage: {
+      asset: {
+        _id: string;
+        url: string;
+        metadata: {
+          dimensions: SanityImageDimensions | null;
+          lqip: string | null;
         } | null;
-        noIndex?: boolean;
       } | null;
-    }
-  | null;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    noIndex?: boolean;
+  } | null;
+} | null;
 
 // Source: src/sanity/queries.ts
 // Variable: ABOUT_QUERY
-// Query: *[_id == "aboutPage"][0] {    hero{ eyebrow, headline, tagline, image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} },    origin,    figures,    principles,    process,    material,    promise,    closing,    seo{ ..., shareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} }  }
-export type ABOUT_QUERY_RESULT =
-  | {
-      hero: null;
-      origin: null;
-      figures: null;
-      principles: null;
-      process: null;
-      material: null;
-      promise: null;
-      closing: null;
-      seo: null;
-    }
-  | {
-      hero: null;
-      origin: null;
-      figures: null;
-      principles: null;
-      process: null;
-      material: null;
-      promise: null;
-      closing: null;
-      seo: {
-        _type: "seo";
-        metaTitle?: string;
-        metaDescription?: string;
-        shareImage: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
+// Query: *[_type == "aboutPage" && _id == "aboutPage"][0] {    hero{ eyebrow, headline, tagline, image {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} },    origin,    figures,    principles,    process,    material,    promise,    closing,    seo{ ..., shareImage {  ...,  asset->{ _id, url, metadata{ dimensions, lqip } }} }  }
+export type ABOUT_QUERY_RESULT = {
+  hero: {
+    eyebrow: string | null;
+    headline: string;
+    tagline: string;
+    image: {
+      asset: {
+        _id: string;
+        url: string;
+        metadata: {
+          dimensions: SanityImageDimensions | null;
+          lqip: string | null;
         } | null;
-        noIndex?: boolean;
       } | null;
-    }
-  | {
-      hero: {
-        eyebrow: string | null;
-        headline: string;
-        tagline: string;
-        image: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: "image";
-        };
-      } | null;
-      origin: {
-        eyebrow: string;
-        heading: string;
-        lead: string;
-        quote: string;
-        body: string;
-      } | null;
-      figures: Array<
-        {
-          _key: string;
-        } & Figure
-      >;
-      principles: {
-        eyebrow: string;
-        heading: string;
-        items: Array<
-          {
-            _key: string;
-          } & Point
-        >;
-      } | null;
-      process: {
-        eyebrow: string;
-        heading: string;
-        items: Array<
-          {
-            _key: string;
-          } & Point
-        >;
-      } | null;
-      material: {
-        eyebrow: string;
-        heading: string;
-        lead: string;
-        body: string;
-      } | null;
-      promise: {
-        eyebrow: string;
-        heading: string;
-        lead: string;
-        body: string;
-      } | null;
-      closing: {
-        quote: string;
-        attribution?: string;
-      } | null;
-      seo: {
-        _type: "seo";
-        metaTitle?: string;
-        metaDescription?: string;
-        shareImage: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    };
+  };
+  origin: {
+    eyebrow: string;
+    heading: string;
+    lead: string;
+    quote: string;
+    body: string;
+  };
+  figures: Array<
+    {
+      _key: string;
+    } & Figure
+  >;
+  principles: {
+    eyebrow: string;
+    heading: string;
+    items: Array<
+      {
+        _key: string;
+      } & Point
+    >;
+  };
+  process: {
+    eyebrow: string;
+    heading: string;
+    items: Array<
+      {
+        _key: string;
+      } & Point
+    >;
+  };
+  material: {
+    eyebrow: string;
+    heading: string;
+    lead: string;
+    body: string;
+  };
+  promise: {
+    eyebrow: string;
+    heading: string;
+    lead: string;
+    body: string;
+  };
+  closing: {
+    quote: string;
+    attribution?: string;
+  };
+  seo: {
+    _type: "seo";
+    metaTitle?: string;
+    metaDescription?: string;
+    shareImage: {
+      asset: {
+        _id: string;
+        url: string;
+        metadata: {
+          dimensions: SanityImageDimensions | null;
+          lqip: string | null;
         } | null;
-        noIndex?: boolean;
       } | null;
-    }
-  | {
-      hero: {
-        eyebrow: null;
-        headline: null;
-        tagline: null;
-        image: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: "image";
-        };
-      } | null;
-      origin: null;
-      figures: null;
-      principles: null;
-      process: null;
-      material: null;
-      promise: null;
-      closing: {
-        heading: string;
-        body: string;
-        statement: string;
-        disciplines?: Array<{
-          label: string;
-          name: string;
-          collection: CollectionReference;
-          _key: string;
-        }>;
-      } | null;
-      seo: {
-        _type: "seo";
-        metaTitle?: string;
-        metaDescription?: string;
-        shareImage: {
-          asset: {
-            _id: string;
-            url: string;
-            metadata: {
-              dimensions: SanityImageDimensions | null;
-              lqip: string | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          _type: "image";
-        } | null;
-        noIndex?: boolean;
-      } | null;
-    }
-  | null;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+    noIndex?: boolean;
+  } | null;
+} | null;
 
 // Source: src/sanity/queries.ts
 // Variable: LISTED_PRODUCT_COUNT_QUERY
@@ -1293,13 +925,10 @@ export type LISTED_PRODUCT_COUNT_QUERY_RESULT = number;
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '\n  *[_type == "collection"] | order(order asc) {\n    _id,\n    name,\n    "slug": slug.current,\n    order,\n    tagline,\n    cover {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n},\n    intro,\n    reasons,\n    difference,\n    seo{ ..., shareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} },\n    "products": *[_type == "product" && collection._ref == ^._id && published == true && defined(image)]\n      | order(order asc) { \n  _id,\n  name,\n  "slug": slug.current,\n  configuration,\n  sizes,\n  order,\n  kind,\n  published,\n  image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n},\n  form, panel, shellNote,\n  pumps, jets, spineJets, bubbleJets, pillows, lights,\n  ratedAirPump, audio, controlsStandard, extras,\n  highlights, specGroups,\n  story,\n  seo{ ..., shareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} }\n }\n  }\n': COLLECTIONS_QUERY_RESULT;
-    '\n  *[_type == "collection" && slug.current == $slug][0] {\n    _id,\n    name,\n    "slug": slug.current,\n    order,\n    tagline,\n    cover {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n},\n    intro,\n    reasons,\n    difference,\n    seo{ ..., shareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} },\n    "products": *[_type == "product" && collection._ref == ^._id && published == true && defined(image)]\n      | order(order asc) { \n  _id,\n  name,\n  "slug": slug.current,\n  configuration,\n  sizes,\n  order,\n  kind,\n  published,\n  image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n},\n  form, panel, shellNote,\n  pumps, jets, spineJets, bubbleJets, pillows, lights,\n  ratedAirPump, audio, controlsStandard, extras,\n  highlights, specGroups,\n  story,\n  seo{ ..., shareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} }\n }\n  }\n': COLLECTION_QUERY_RESULT;
-    '\n  *[_type == "collection" && defined(slug.current)]{ "category": slug.current }\n': COLLECTION_PATHS_QUERY_RESULT;
-    '\n  *[_type == "product" && published == true && defined(image) && defined(story) && defined(slug.current)]{\n    "category": collection->slug.current,\n    "product": slug.current\n  }\n': PRODUCT_PATHS_QUERY_RESULT;
-    '\n  *[_id == "siteSettings"][0] {\n    name, parent, city, founded, positioning,\n    email, phone, website, works, socialLinks,\n    defaultShareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n}\n  }\n': SITE_SETTINGS_QUERY_RESULT;
-    '\n  *[_id == "homePage"][0] {\n    hero{ statement, taglineLead, taglineAccent, cta, image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} },\n    ethos{\n      cards[]{ _key, title, copy, image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} },\n      closingLead, closingAccent\n    },\n    archetypes[]{\n      _key,\n      title,\n      image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n},\n      collection->{ name, "slug": slug.current, tagline, cover {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} }\n    },\n    signaturePieces[]{\n      _key,\n      copy,\n      product->{\n        name,\n        "slug": slug.current,\n        configuration,\n        sizes,\n        story,\n        image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n},\n        "category": collection->slug.current\n      }\n    },\n    innovation{ heading, disciplines, image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} },\n    closing{\n      heading, body, statement,\n      disciplines[]{ _key, label, name, "slug": collection->slug.current }\n    },\n    seo{ ..., shareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} }\n  }\n': HOME_QUERY_RESULT;
-    '\n  *[_id == "aboutPage"][0] {\n    hero{ eyebrow, headline, tagline, image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} },\n    origin,\n    figures,\n    principles,\n    process,\n    material,\n    promise,\n    closing,\n    seo{ ..., shareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} }\n  }\n': ABOUT_QUERY_RESULT;
+    '\n  *[_type == "collection"] | order(order asc) {\n    _id,\n    _updatedAt,\n    name,\n    "slug": slug.current,\n    order,\n    tagline,\n    cover {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n},\n    intro,\n    reasons,\n    difference,\n    seo{ ..., shareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} },\n    "products": *[_type == "product" && collection._ref == ^._id && published == true && defined(image)]\n      | order(order asc) { \n  _id,\n  _updatedAt,\n  name,\n  "slug": slug.current,\n  configuration,\n  sizes,\n  order,\n  kind,\n  published,\n  image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n},\n  form, panel, shellNote,\n  pumps, jets, spineJets, bubbleJets, pillows, lights,\n  ratedAirPump, audio, controlsStandard, extras,\n  highlights, specGroups,\n  story,\n  seo{ ..., shareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} }\n }\n  }\n': COLLECTIONS_QUERY_RESULT;
+    '\n  *[_type == "siteSettings" && _id == "siteSettings"][0] {\n    name, parent, city, founded, positioning,\n    email, phone, website, works, socialLinks,\n    defaultShareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n}\n  }\n': SITE_SETTINGS_QUERY_RESULT;
+    '\n  *[_type == "homePage" && _id == "homePage"][0] {\n    hero{ statement, taglineLead, taglineAccent, cta, image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} },\n    ethos{\n      cards[]{ _key, title, copy, image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} },\n      closingLead, closingAccent\n    },\n    archetypes[]{\n      _key,\n      title,\n      image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n},\n      collection->{ name, "slug": slug.current, tagline, cover {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} }\n    },\n    signaturePieces[]{\n      _key,\n      copy,\n      product->{\n        name,\n        "slug": slug.current,\n        configuration,\n        sizes,\n        story,\n        image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n},\n        "category": collection->slug.current\n      }\n    },\n    innovation{ heading, disciplines, image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} },\n    closing{\n      heading, body, statement,\n      disciplines[]{ _key, label, name, "slug": collection->slug.current }\n    },\n    seo{ ..., shareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} }\n  }\n': HOME_QUERY_RESULT;
+    '\n  *[_type == "aboutPage" && _id == "aboutPage"][0] {\n    hero{ eyebrow, headline, tagline, image {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} },\n    origin,\n    figures,\n    principles,\n    process,\n    material,\n    promise,\n    closing,\n    seo{ ..., shareImage {\n  ...,\n  asset->{ _id, url, metadata{ dimensions, lqip } }\n} }\n  }\n': ABOUT_QUERY_RESULT;
     '\n  count(*[_type == "product" && published == true && defined(image)])\n': LISTED_PRODUCT_COUNT_QUERY_RESULT;
   }
 }

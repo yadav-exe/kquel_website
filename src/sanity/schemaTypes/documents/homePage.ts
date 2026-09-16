@@ -19,6 +19,7 @@ export const homePageType = defineType({
       name: "hero",
       title: "Hero",
       type: "object",
+      validation: (rule) => rule.required(),
       group: "hero",
       fields: [
         defineField({
@@ -62,6 +63,7 @@ export const homePageType = defineType({
       name: "ethos",
       title: "Our ethos",
       type: "object",
+      validation: (rule) => rule.required(),
       group: "ethos",
       fields: [
         defineField({
@@ -69,7 +71,7 @@ export const homePageType = defineType({
           title: "Experience cards",
           type: "array",
           validation: (rule) =>
-            rule.length(4).error("The ethos strip holds exactly four cards."),
+            rule.required().length(4).error("The ethos strip holds exactly four cards."),
           of: [
             {
               type: "object",
@@ -118,7 +120,7 @@ export const homePageType = defineType({
       description:
         "Six tiles in a fixed arrangement: the first is the large one.",
       validation: (rule) =>
-        rule.length(6).error("The tile grid holds exactly six."),
+        rule.required().length(6).error("The tile grid holds exactly six."),
       of: [
         {
           type: "object",
@@ -164,7 +166,7 @@ export const homePageType = defineType({
       type: "array",
       group: "signature",
       validation: (rule) =>
-        rule.length(3).error("The signature row holds exactly three."),
+        rule.required().length(3).error("The signature row holds exactly three."),
       of: [
         {
           type: "object",
@@ -199,6 +201,7 @@ export const homePageType = defineType({
       name: "innovation",
       title: "Innovation",
       type: "object",
+      validation: (rule) => rule.required(),
       group: "innovation",
       fields: [
         defineField({
@@ -222,6 +225,7 @@ export const homePageType = defineType({
       name: "closing",
       title: "Why KQUEL",
       type: "object",
+      validation: (rule) => rule.required(),
       group: "closing",
       fields: [
         defineField({
@@ -249,7 +253,7 @@ export const homePageType = defineType({
           title: "Discipline links",
           type: "array",
           validation: (rule) =>
-            rule.length(4).error("The link row holds exactly four."),
+            rule.required().length(4).error("The link row holds exactly four."),
           of: [
             {
               type: "object",

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 import {
   motion,
@@ -8,11 +7,19 @@ import {
   useScroll,
   useTransform,
 } from "motion/react";
-import heroImage from "../../../public/collection_section_images/whirlpool.jpg";
+import SanityPicture from "@/components/sanity-picture";
+import type { AboutPage } from "@/lib/pages";
 
 const EASE = [0.19, 1, 0.22, 1] as const;
 
-export default function AboutHero() {
+export default function AboutHero({
+  hero,
+  eyebrow,
+}: {
+  hero: AboutPage["hero"];
+  /** Resolved by the page: the editor's line, or "Established ‹year› · ‹city›". */
+  eyebrow: string;
+}) {
   const ref = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
 
@@ -43,12 +50,11 @@ export default function AboutHero() {
         style={still ? undefined : { y: imageY, scale: imageScale }}
         className="absolute inset-0"
       >
-        <Image
-          src={heroImage}
+        <SanityPicture
+          image={hero.image}
           alt=""
           fill
           priority
-          placeholder="blur"
           sizes="100vw"
           className="object-cover"
         />
@@ -65,7 +71,7 @@ export default function AboutHero() {
           transition={{ duration: 1.6, ease: EASE, delay: 0.2 }}
           className="label-caps text-chrome/70"
         >
-          Established 1998 · New Delhi
+          {eyebrow}
         </motion.p>
 
         <motion.h1
@@ -74,7 +80,7 @@ export default function AboutHero() {
           transition={{ duration: 1.4, ease: EASE, delay: 0.5 }}
           className="mt-10 max-w-[16ch] font-display text-[clamp(2.5rem,6.5vw,5.25rem)] leading-[1.05] tracking-[-0.02em] text-foreground"
         >
-          Twenty-eight years on a single subject.
+          {hero.headline}
         </motion.h1>
 
         <motion.p
@@ -83,7 +89,7 @@ export default function AboutHero() {
           transition={{ duration: 1.2, ease: EASE, delay: 0.9 }}
           className="mt-8 font-display text-[clamp(1.15rem,2.2vw,1.75rem)] italic text-chrome/85"
         >
-          Water, and the rooms built to hold it.
+          {hero.tagline}
         </motion.p>
       </motion.div>
 

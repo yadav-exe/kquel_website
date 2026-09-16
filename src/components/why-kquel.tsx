@@ -1,18 +1,8 @@
 import Link from "next/link";
 import Reveal from "@/components/reveal";
+import type { HomePage } from "@/lib/pages";
 
-/* The four disciplines the house works in, each pointing at the collection
-   that carries it — the homepage's last word and its way into the catalogue. */
-const DISCIPLINES = [
-  {
-    label: "Hydrotherapy",
-    name: "Whirlpool baths",
-    href: "/collections/whirlpool-bathtubs",
-  },
-  { label: "Steam", name: "Steam cabins", href: "/collections/steam" },
-  { label: "Dry heat", name: "Saunas", href: "/collections/sauna" },
-  { label: "Immersion", name: "Pools", href: "/collections/pools" },
-];
+type ClosingContent = HomePage["closing"];
 
 function Arrow() {
   return (
@@ -30,7 +20,9 @@ function Arrow() {
   );
 }
 
-export default function WhyKquel() {
+/* The homepage's last word and its way into the catalogue: the brand
+   statement, the enquiry, and the disciplines the house works in. */
+export default function WhyKquel({ closing }: { closing: ClosingContent }) {
   return (
     <section
       aria-labelledby="why-kquel"
@@ -44,19 +36,14 @@ export default function WhyKquel() {
               id="why-kquel"
               className="mt-6 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight text-foreground"
             >
-              Not a bathroom brand.
+              {closing.heading}
             </h2>
           </Reveal>
 
           <Reveal delay={0.1} className="max-w-[58ch]">
-            <p className="text-lg leading-relaxed text-chrome/85">
-              KQUEL builds the rooms a house rests in. Hydrotherapy, steam,
-              sauna, the pool — each piece is engineered to the same three
-              ends: a design worth looking at, the technology to make it work,
-              and the durability to keep it working.
-            </p>
+            <p className="text-lg leading-relaxed text-chrome/85">{closing.body}</p>
             <p className="mt-7 font-display text-xl italic leading-relaxed text-foreground">
-              What arrives is not a fitting. It is the environment.
+              {closing.statement}
             </p>
 
             <div className="mt-12 flex flex-col gap-4 sm:flex-row">
@@ -76,26 +63,28 @@ export default function WhyKquel() {
           </Reveal>
         </div>
 
-        <ul className="mt-20 grid grid-cols-1 gap-px border-t border-chrome/15 bg-chrome/10 sm:grid-cols-2 lg:grid-cols-4">
-          {DISCIPLINES.map((discipline, i) => (
-            <li key={discipline.href} className="bg-surface">
-              <Reveal delay={0.15 + i * 0.06} className="h-full">
-                <Link
-                  href={discipline.href}
-                  className="group flex h-full flex-col gap-3 py-8 md:px-6"
-                >
-                  <span className="label-caps text-chrome/70">
-                    {discipline.label}
-                  </span>
-                  <span className="inline-flex items-center gap-3 font-display text-xl leading-tight text-foreground transition-colors duration-300 group-hover:text-violet-ink">
-                    {discipline.name}
-                    <Arrow />
-                  </span>
-                </Link>
-              </Reveal>
-            </li>
-          ))}
-        </ul>
+        {closing.disciplines.length > 0 && (
+          <ul className="mt-20 grid grid-cols-1 gap-px border-t border-chrome/15 bg-chrome/10 sm:grid-cols-2 lg:grid-cols-4">
+            {closing.disciplines.map((discipline, i) => (
+              <li key={`${discipline.href}-${discipline.label}`} className="bg-surface">
+                <Reveal delay={0.15 + i * 0.06} className="h-full">
+                  <Link
+                    href={discipline.href}
+                    className="group flex h-full flex-col gap-3 py-8 md:px-6"
+                  >
+                    <span className="label-caps text-chrome/70">
+                      {discipline.label}
+                    </span>
+                    <span className="inline-flex items-center gap-3 font-display text-xl leading-tight text-foreground transition-colors duration-300 group-hover:text-violet-ink">
+                      {discipline.name}
+                      <Arrow />
+                    </span>
+                  </Link>
+                </Reveal>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </section>
   );

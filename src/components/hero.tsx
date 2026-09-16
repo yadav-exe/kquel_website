@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 import {
   motion,
@@ -10,7 +9,10 @@ import {
   useTransform,
   type MotionStyle,
 } from "motion/react";
-import heroImage from "../../public/hero_image.jpg";
+import SanityPicture from "@/components/sanity-picture";
+import type { HomePage } from "@/lib/pages";
+
+type HeroContent = HomePage["hero"];
 
 /* Thin plumb-line ornament pointing from the statement to the image below. */
 function PlumbLine() {
@@ -29,14 +31,14 @@ function PlumbLine() {
   );
 }
 
-function DiveCta() {
+function DiveCta({ label }: { label: string }) {
   return (
     <a
       href="#ethos"
       className="group inline-flex flex-col items-center gap-4"
     >
       <span className="font-sans text-[13px] font-semibold uppercase tracking-[0.22em] text-foreground transition-colors duration-300 group-hover:text-violet-ink">
-        Let&apos;s Dive
+        {label}
       </span>
       <span className="drift text-violet-ink [filter:drop-shadow(0_0_10px_rgba(124,92,255,0.45))]">
         <svg
@@ -58,11 +60,11 @@ function DiveCta() {
   );
 }
 
-function IntroStatement() {
+function IntroStatement({ statement }: { statement: string }) {
   return (
     <>
       <p className="max-w-[24ch] font-display text-[clamp(2.25rem,4.5vw,4rem)] leading-[1.2] tracking-[-0.02em] text-foreground">
-        Designing Spaces Where Wellness Becomes A Way Of Life.
+        {statement}
       </p>
       <div className="mt-10">
         <PlumbLine />
@@ -72,9 +74,13 @@ function IntroStatement() {
 }
 
 function BrandLockup({
+  lead,
+  accent,
   wordmark,
   tagline,
 }: {
+  lead: string;
+  accent: string;
   wordmark?: MotionStyle;
   tagline?: MotionStyle;
 }) {
@@ -90,16 +96,29 @@ function BrandLockup({
         style={tagline}
         className="mt-6 font-display text-[clamp(1.75rem,3.5vw,3.25rem)] italic leading-tight text-foreground"
       >
-        Water,{" "}
+        {lead}{" "}
         <span className="text-violet-ink [text-shadow:0_0_28px_rgba(124,92,255,0.45)]">
-          Crafted.
+          {accent}
         </span>
       </motion.p>
     </>
   );
 }
 
-export default function Hero() {
+function HeroImage({ image }: { image: HeroContent["image"] }) {
+  return (
+    <SanityPicture
+      image={image}
+      alt=""
+      fill
+      priority
+      sizes="100vw"
+      className="object-cover"
+    />
+  );
+}
+
+export default function Hero({ hero }: { hero: HeroContent }) {
   const runwayRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
 
@@ -145,26 +164,18 @@ export default function Hero() {
     return (
       <>
         <section className="flex min-h-[60svh] flex-col items-center justify-center px-5 pt-24 text-center">
-          <IntroStatement />
+          <IntroStatement statement={hero.statement} />
         </section>
         <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden">
           <div className="absolute inset-0">
-            <Image
-              src={heroImage}
-              alt=""
-              fill
-              priority
-              placeholder="blur"
-              sizes="100vw"
-              className="object-cover"
-            />
+            <HeroImage image={hero.image} />
           </div>
           <div className="hero-scrim absolute inset-0" aria-hidden />
           <div className="relative z-10 flex flex-col items-center px-5 text-center">
-            <BrandLockup />
+            <BrandLockup lead={hero.taglineLead} accent={hero.taglineAccent} />
           </div>
           <div className="absolute inset-x-0 bottom-10 z-10 flex justify-center">
-            <DiveCta />
+            <DiveCta label={hero.cta} />
           </div>
         </section>
       </>
@@ -179,15 +190,7 @@ export default function Hero() {
           className="absolute inset-0 will-change-[clip-path]"
         >
           <motion.div style={{ scale: imageScale }} className="absolute inset-0">
-            <Image
-              src={heroImage}
-              alt=""
-              fill
-              priority
-              placeholder="blur"
-              sizes="100vw"
-              className="object-cover"
-            />
+            <HeroImage image={hero.image} />
           </motion.div>
           {/* Constant dim keeps the framed photo moody before the reveal. */}
           <div className="absolute inset-0 bg-void/25" aria-hidden />
@@ -202,11 +205,13 @@ export default function Hero() {
           style={{ y: introY, opacity: introOpacity }}
           className="reveal-rise absolute inset-x-0 top-0 flex h-[58svh] flex-col items-center justify-center px-5 pt-14 text-center"
         >
-          <IntroStatement />
+          <IntroStatement statement={hero.statement} />
         </motion.div>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center px-5 text-center">
           <BrandLockup
+            lead={hero.taglineLead}
+            accent={hero.taglineAccent}
             wordmark={{ opacity: wordmarkOpacity, y: wordmarkY }}
             tagline={{ opacity: taglineOpacity, y: taglineY }}
           />
@@ -216,7 +221,7 @@ export default function Hero() {
           style={{ opacity: ctaOpacity, y: ctaY }}
           className="absolute inset-x-0 bottom-10 flex justify-center"
         >
-          <DiveCta />
+          <DiveCta label={hero.cta} />
         </motion.div>
       </div>
     </section>

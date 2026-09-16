@@ -1,5 +1,6 @@
 import SanityPicture from "@/components/sanity-picture";
 import { imageUrl } from "@/sanity/image";
+import { absolute, breadcrumbJsonLd } from "@/lib/seo";
 import Link from "next/link";
 import ProductBlueprint from "@/components/product-blueprint";
 import type { Category, Product } from "@/lib/catalog";
@@ -52,6 +53,7 @@ export default function ProductDetail({
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
+    url: absolute(`/collections/${category.slug}/${product.slug}`),
     description: product.story,
     image: imageUrl(image),
     brand: { "@type": "Brand", name: "KQUEL" },
@@ -72,6 +74,21 @@ export default function ProductDetail({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: "Collections", path: "/collections" },
+              { name: category.name, path: `/collections/${category.slug}` },
+              {
+                name: product.name,
+                path: `/collections/${category.slug}/${product.slug}`,
+              },
+            ])
+          ),
+        }}
       />
 
       <Breadcrumb category={category} product={product} />

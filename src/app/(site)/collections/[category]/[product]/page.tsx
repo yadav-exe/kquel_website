@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductDetail from "@/components/product-detail";
 import { getCategoriesForBuild, getCategory } from "@/lib/catalog";
+import { pageMetadata, snippet } from "@/lib/seo";
+import { getSiteSettings } from "@/lib/site";
 
 type Params = { category: string; product: string };
 
@@ -21,28 +23,6 @@ export async function generateStaticParams(): Promise<Params[]> {
 
 export const dynamicParams = true;
 
-const DESCRIPTION_LIMIT = 160;
-/* Below this, whole sentences leave most of a search snippet empty. */
-const DESCRIPTION_FLOOR = 110;
-
-/* The story, fitted to a search result. Whole sentences where they fill the
-   snippet; otherwise it runs on and stops at a word, with an ellipsis — never
-   mid-word, which is what a plain slice at the limit produced. */
-function describe(story: string) {
-  if (story.length <= DESCRIPTION_LIMIT) return story;
-
-  const sentences = story.match(/[^.!?]+[.!?]+(\s|$)/g) ?? [story];
-  let whole = "";
-  for (const sentence of sentences) {
-    if ((whole + sentence).trim().length > DESCRIPTION_LIMIT) break;
-    whole += sentence;
-  }
-  if (whole.trim().length >= DESCRIPTION_FLOOR) return whole.trim();
-
-  const cut = story.slice(0, DESCRIPTION_LIMIT - 1);
-  return `${cut.slice(0, cut.lastIndexOf(" ")).replace(/[\s,;:—–-]+$/, "")}…`;
-}
-
 async function load(params: Promise<Params>) {
   const { category: categorySlug, product: productSlug } = await params;
   const category = await getCategory(categorySlug);
@@ -61,14 +41,15 @@ export async function generateMetadata({
   if (!found) return {};
 
   const { category, product } = found;
-  const { seo } = product;
-  return {
-    title: seo?.metaTitle ?? `${product.name} — KQUEL ${category.name}`,
-    description:
-      seo?.metaDescription ?? (product.story && describe(product.story)),
-    alternates: { canonical: `/collections/${category.slug}/${product.slug}` },
-    robots: seo?.noIndex ? { index: false, follow: false } : undefined,
-  };
+  const site = await getSiteSettings();
+  return pageMetadata({
+    title: `${product.name} — ${site.name} ${category.name}`,
+    description: snippet(product.story ?? ""),
+    path: `/collections/${category.slug}/${product.slug}`,
+    image: product.image ?? category.cover,
+    seo: product.seo,
+    site,
+  });
 }
 
 export default async function ProductPage({

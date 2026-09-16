@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import CatalogView from "@/components/catalog-view";
 import CollectionEditorial from "@/components/collection-editorial";
 import { getCategoriesForBuild, getCategory } from "@/lib/catalog";
+import { breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
+import { getSiteSettings } from "@/lib/site";
 
 type Params = { category: string };
 
@@ -26,15 +28,15 @@ export async function generateMetadata({
 
   if (!category) return {};
 
-  const { seo } = category;
-  return {
-    title: seo?.metaTitle ?? `${category.name} — KQUEL Collections`,
-    description:
-      seo?.metaDescription ??
-      `${category.tagline} Explore the KQUEL ${category.name.toLowerCase()} catalog.`,
-    alternates: { canonical: `/collections/${category.slug}` },
-    robots: seo?.noIndex ? { index: false, follow: false } : undefined,
-  };
+  const site = await getSiteSettings();
+  return pageMetadata({
+    title: `${category.name} — ${site.name} Collections`,
+    description: `${category.tagline} ${category.editorial.intro}`,
+    path: `/collections/${category.slug}`,
+    image: category.cover,
+    seo: category.seo,
+    site,
+  });
 }
 
 export default async function CategoryPage({
@@ -51,8 +53,17 @@ export default async function CategoryPage({
      which would otherwise be serialised into the page a second time. */
   const { editorial, ...listing } = category;
 
+  const breadcrumbs = breadcrumbJsonLd([
+    { name: "Collections", path: "/collections" },
+    { name: category.name, path: `/collections/${category.slug}` },
+  ]);
+
   return (
     <main id="content" className="flex-1">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+      />
       <div className="mx-auto max-w-[1440px] px-5 pt-32 pb-28 md:px-20 md:pt-40 md:pb-36">
         <nav aria-label="Breadcrumb" className="label-caps text-chrome/70">
           <Link
