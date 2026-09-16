@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
-import SiteHeader from "@/components/site-header";
-import SiteFooter from "@/components/site-footer";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -30,6 +28,8 @@ export const viewport: Viewport = {
   themeColor: "#0b0b0f",
 };
 
+/* Fonts and global styles only. The site's header and footer live in the
+   (site) group so the editing Studio at /studio renders without them. */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -40,17 +40,7 @@ export default function RootLayout({
       lang="en"
       className={`${playfair.variable} ${hanken.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <a
-          href="#content"
-          className="label-caps sr-only focus:not-sr-only focus:absolute focus:left-5 focus:top-5 focus:z-50 focus:bg-void focus:px-4 focus:py-3 focus:text-foreground"
-        >
-          Skip to content
-        </a>
-        <SiteHeader />
-        {children}
-        <SiteFooter />
-      </body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

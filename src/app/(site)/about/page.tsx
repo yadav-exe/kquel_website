@@ -3,7 +3,7 @@ import Link from "next/link";
 import AboutHero from "@/components/about/about-hero";
 import MaterialSection from "@/components/about/material-section";
 import Reveal from "@/components/reveal";
-import { CATEGORIES } from "@/lib/catalog";
+import { getCategories } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "About — KQUEL",
@@ -13,9 +13,7 @@ export const metadata: Metadata = {
 };
 
 const FOUNDED = 1998;
-const pieceCount = CATEGORIES.reduce((n, c) => n + c.products.length, 0);
-
-const FIGURES = [
+const figures = (pieceCount: number) => [
   { value: String(FOUNDED), label: "Established" },
   {
     value: String(new Date().getFullYear() - FOUNDED),
@@ -75,7 +73,11 @@ const PROCESS = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const categories = await getCategories();
+  const pieceCount = categories.reduce((n, c) => n + c.products.length, 0);
+  const FIGURES = figures(pieceCount);
+
   return (
     <main id="content" className="flex-1">
       <AboutHero />
@@ -257,7 +259,7 @@ export default function AboutPage() {
 
           <Reveal delay={0.25}>
             <p className="mt-16 text-base text-chrome/70">
-              {pieceCount} pieces across {CATEGORIES.length} collections.
+              {pieceCount} pieces across {categories.length} collections.
             </p>
             <Link
               href="/collections"

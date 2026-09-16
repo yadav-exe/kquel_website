@@ -13,6 +13,7 @@ export default function CollectionEditorial({
 
   return (
     <>
+      {reasons.items.length > 0 && (
       <section
         aria-labelledby="reasons"
         className="mt-28 border-t border-chrome/15 pt-20 md:mt-36 md:pt-28"
@@ -47,7 +48,9 @@ export default function CollectionEditorial({
           </ul>
         </div>
       </section>
+      )}
 
+      {difference.items.length > 0 && (
       <section aria-labelledby="difference" className="mt-28 md:mt-36">
         <Reveal>
           <p className="label-caps text-violet-ink">The KQUEL difference</p>
@@ -76,6 +79,7 @@ export default function CollectionEditorial({
           ))}
         </ul>
       </section>
+      )}
     </>
   );
 }
