@@ -3,16 +3,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import CatalogView from "@/components/catalog-view";
 import CollectionEditorial from "@/components/collection-editorial";
-import { CATEGORIES, getCategory } from "@/lib/catalog";
+import { getCategoriesForBuild, getCategory } from "@/lib/catalog";
+import { breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
+import { getSiteSettings } from "@/lib/site";
 
 type Params = { category: string };
 
-export function generateStaticParams(): Params[] {
-  return CATEGORIES.map((category) => ({ category: category.slug }));
+export async function generateStaticParams(): Promise<Params[]> {
+  const categories = await getCategoriesForBuild();
+  return categories.map((category) => ({ category: category.slug }));
 }
 
-/* Anything outside the known slugs is a 404, not a rendered page. */
-export const dynamicParams = false;
+/* A collection published after the last deploy is rendered on first
+   request rather than waiting for a rebuild. Unknown slugs still 404. */
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,
@@ -20,15 +24,19 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { category: slug } = await params;
-  const category = getCategory(slug);
+  const category = await getCategory(slug);
 
   if (!category) return {};
 
-  return {
-    title: `${category.name} — KQUEL Collections`,
-    description: `${category.tagline} Explore the KQUEL ${category.name.toLowerCase()} catalog.`,
-    alternates: { canonical: `/collections/${category.slug}` },
-  };
+  const site = await getSiteSettings();
+  return pageMetadata({
+    title: `${category.name} — ${site.name} Collections`,
+    description: `${category.tagline} ${category.editorial.intro}`,
+    path: `/collections/${category.slug}`,
+    image: category.cover,
+    seo: category.seo,
+    site,
+  });
 }
 
 export default async function CategoryPage({
@@ -37,7 +45,7 @@ export default async function CategoryPage({
   params: Promise<Params>;
 }) {
   const { category: slug } = await params;
-  const category = getCategory(slug);
+  const category = await getCategory(slug);
 
   if (!category) notFound();
 
@@ -45,8 +53,17 @@ export default async function CategoryPage({
      which would otherwise be serialised into the page a second time. */
   const { editorial, ...listing } = category;
 
+  const breadcrumbs = breadcrumbJsonLd([
+    { name: "Collections", path: "/collections" },
+    { name: category.name, path: `/collections/${category.slug}` },
+  ]);
+
   return (
     <main id="content" className="flex-1">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+      />
       <div className="mx-auto max-w-[1440px] px-5 pt-32 pb-28 md:px-20 md:pt-40 md:pb-36">
         <nav aria-label="Breadcrumb" className="label-caps text-chrome/70">
           <Link

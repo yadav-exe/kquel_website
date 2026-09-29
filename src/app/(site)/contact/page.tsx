@@ -1,16 +1,37 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import EnquiryForm from "@/components/enquiry-form";
-import { CONTACT_DETAILS } from "@/lib/site";
+import { getCategories } from "@/lib/catalog";
+import { pageMetadata } from "@/lib/seo";
+import { contactDetails, getSiteSettings } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Contact — KQUEL",
-  description:
-    "Enquire about KQUEL whirlpool bathtubs, hot spas, saunas, steam cabins, showers and pools. Manufactured in New Delhi since 1998.",
-  alternates: { canonical: "/contact" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [site, categories] = await Promise.all([
+    getSiteSettings(),
+    getCategories(),
+  ]);
+  const names = categories.map((c) => c.name.toLowerCase());
+  return pageMetadata({
+    title: `Contact — ${site.name}`,
+    description: `Enquire about ${site.name} ${names.join(", ")}. ${site.positioning}`,
+    path: "/contact",
+    site,
+  });
+}
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const [site, categories] = await Promise.all([
+    getSiteSettings(),
+    getCategories(),
+  ]);
+  const details = contactDetails(site);
+  /* The form only needs names and slugs to build its two selects. */
+  const collections = categories.map(({ name, slug, products }) => ({
+    name,
+    slug,
+    products: products.map((p) => ({ name: p.name, slug: p.slug, sizes: p.sizes })),
+  }));
+
   return (
     <main id="content" className="flex-1">
       <div className="mx-auto max-w-[1440px] px-5 pt-32 pb-28 md:px-20 md:pt-40 md:pb-36">
@@ -27,7 +48,7 @@ export default function ContactPage() {
             </p>
 
             <dl className="mt-14 border-t border-chrome/15">
-              {CONTACT_DETAILS.map((detail) => (
+              {details.map((detail) => (
                 <div key={detail.label} className="border-b border-chrome/15 py-6">
                   <dt className="label-caps text-chrome/70">{detail.label}</dt>
                   <dd className="mt-3 text-base text-foreground">
@@ -48,7 +69,7 @@ export default function ContactPage() {
           </div>
 
           <Suspense fallback={<div className="min-h-[40rem]" />}>
-            <EnquiryForm />
+            <EnquiryForm collections={collections} contactEmail={site.email} />
           </Suspense>
         </div>
       </div>

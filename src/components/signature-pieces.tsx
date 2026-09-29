@@ -1,49 +1,27 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { findProduct } from "@/lib/catalog";
+import SanityPicture from "@/components/sanity-picture";
+import type { SanityImage } from "@/sanity/image";
 
-/* The three most heavily specified pieces in the catalogue. Name, size and
-   photography are read from the catalogue so this section cannot drift out
-   of step with the collection pages. */
-const SIGNATURE = [
-  {
-    slug: "aquel-hot-spa",
-    copy: "Three pumps, twenty-two jets and twenty air bubble outlets, tuned across a single seven-by-eight-foot shell.",
-  },
-  {
-    slug: "customised-swimming-pool",
-    copy: "Twelve feet of water on a W.P.C deck, filtered, heated and lit from beneath the surface.",
-  },
-  {
-    slug: "empress",
-    copy: "Fourteen jets and eight spine jets held in a six-foot square, with light under the water and sound above it.",
-  },
-];
+export type SignaturePiece = {
+  name: string;
+  size: string;
+  image: SanityImage;
+  alt?: string;
+  href: string;
+  copy: string;
+};
 
 const EASE = [0.19, 1, 0.22, 1] as const;
-
-const PIECES = SIGNATURE.map((entry) => {
-  const found = findProduct(entry.slug);
-  if (!found) return null;
-  return {
-    name: found.product.name,
-    size: found.product.sizes[0],
-    image: found.product.image ?? found.category.src,
-    alt: found.product.image ? found.product.name : found.category.alt,
-    href: `/collections/${found.category.slug}`,
-    copy: entry.copy,
-  };
-}).filter((piece) => piece !== null);
 
 function PieceCard({
   piece,
   order,
   animate,
 }: {
-  piece: (typeof PIECES)[number];
+  piece: SignaturePiece;
   order: number;
   animate: boolean;
 }) {
@@ -56,8 +34,8 @@ function PieceCard({
       className="group flex flex-col items-center text-center"
     >
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-void">
-        <Image
-          src={piece.image}
+        <SanityPicture
+          image={piece.image}
           alt={piece.alt}
           fill
           sizes="(max-width: 768px) 100vw, 30vw"
@@ -85,7 +63,7 @@ function PieceCard({
   );
 }
 
-export default function SignaturePieces() {
+export default function SignaturePieces({ pieces }: { pieces: SignaturePiece[] }) {
   const reduceMotion = useReducedMotion();
   const animate = !reduceMotion;
 
@@ -105,7 +83,7 @@ export default function SignaturePieces() {
       </motion.h2>
 
       <div className="grid grid-cols-1 gap-14 sm:grid-cols-2 md:grid-cols-3 md:gap-10 lg:gap-14">
-        {PIECES.map((piece, i) => (
+        {pieces.map((piece, i) => (
           <PieceCard
             key={piece.name}
             piece={piece}

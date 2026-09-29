@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { CATEGORIES } from "@/lib/catalog";
-import { CONTACT, SITE } from "@/lib/site";
+import { getCategories } from "@/lib/catalog";
+import { getSiteSettings } from "@/lib/site";
 
 /* Only routes that exist are linked — privacy and terms are left out until
    those pages are written, rather than shipping dead links. */
@@ -15,7 +15,11 @@ const COMPANY = [
 const columnLink =
   "inline-flex min-h-11 items-center text-sm text-chrome/70 transition-colors duration-300 hover:text-violet-ink";
 
-export default function SiteFooter() {
+export default async function SiteFooter() {
+  const [site, categories] = await Promise.all([
+    getSiteSettings(),
+    getCategories(),
+  ]);
   const year = new Date().getFullYear();
 
   return (
@@ -24,10 +28,10 @@ export default function SiteFooter() {
         <div className="grid grid-cols-1 gap-14 md:grid-cols-[minmax(0,20rem)_1fr] md:gap-20">
           <div>
             <p className="font-display text-2xl tracking-[0.28em] text-foreground">
-              {SITE.name}
+              {site.name}
             </p>
             <p className="mt-6 max-w-[34ch] text-sm leading-relaxed text-chrome/70">
-              {SITE.positioning}
+              {site.positioning}
             </p>
           </div>
 
@@ -35,7 +39,7 @@ export default function SiteFooter() {
             <div>
               <p className="label-caps text-chrome/70">Collections</p>
               <ul className="mt-4 flex flex-col">
-                {CATEGORIES.map((category) => (
+                {categories.map((category) => (
                   <li key={category.slug}>
                     <Link
                       href={`/collections/${category.slug}`}
@@ -65,22 +69,47 @@ export default function SiteFooter() {
               <p className="label-caps text-chrome/70">Enquiries</p>
               <ul className="mt-4 flex flex-col">
                 <li>
-                  <a href={`mailto:${CONTACT.email}`} className={columnLink}>
-                    {CONTACT.email}
+                  <a href={`mailto:${site.email}`} className={columnLink}>
+                    {site.email}
                   </a>
                 </li>
-                <li>
-                  <a
-                    href={CONTACT.website.href}
-                    rel="noopener noreferrer"
-                    className={columnLink}
-                  >
-                    {CONTACT.website.label}
-                  </a>
-                </li>
-                <li className="flex min-h-11 items-center text-sm leading-relaxed text-chrome/70">
-                  {CONTACT.works}
-                </li>
+                {site.phone && (
+                  <li>
+                    <a
+                      href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
+                      className={columnLink}
+                    >
+                      {site.phone}
+                    </a>
+                  </li>
+                )}
+                {site.website && (
+                  <li>
+                    <a
+                      href={site.website.href}
+                      rel="noopener noreferrer"
+                      className={columnLink}
+                    >
+                      {site.website.label}
+                    </a>
+                  </li>
+                )}
+                {site.works && (
+                  <li className="flex min-h-11 items-center text-sm leading-relaxed text-chrome/70">
+                    {site.works}
+                  </li>
+                )}
+                {site.socialLinks.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      rel="noopener noreferrer"
+                      className={columnLink}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -88,9 +117,10 @@ export default function SiteFooter() {
 
         <div className="mt-20 flex flex-col gap-4 border-t border-chrome/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="label-caps text-chrome/70">
-            © {year} {SITE.name} · {SITE.parent}
+            © {year} {site.name}
+            {site.parent ? ` · ${site.parent}` : ""}
           </p>
-          <p className="label-caps text-chrome/70">{SITE.city}</p>
+          {site.city && <p className="label-caps text-chrome/70">{site.city}</p>}
         </div>
       </div>
     </footer>

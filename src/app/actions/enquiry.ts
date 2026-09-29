@@ -1,6 +1,6 @@
 "use server";
 
-import { CATEGORIES } from "@/lib/catalog";
+import { getCategories, type Category } from "@/lib/catalog";
 
 export type EnquiryInput = {
   name: string;
@@ -22,7 +22,7 @@ const GENERIC_ERROR =
 
 /* Validated again on the server: the browser checks are there to help
    someone filling the form, not to stop someone bypassing it. */
-function invalid(input: EnquiryInput): string | null {
+function invalid(input: EnquiryInput, categories: Category[]): string | null {
   const email = input.email.trim();
   const digits = input.phone.replace(/\D/g, "");
 
@@ -31,7 +31,7 @@ function invalid(input: EnquiryInput): string | null {
     return "Enter an email address we can reply to.";
   }
   if (digits.length < 7) return "Enter a phone number.";
-  if (!CATEGORIES.some((c) => c.slug === input.collection)) {
+  if (!categories.some((c) => c.slug === input.collection)) {
     return "Choose the collection you are interested in.";
   }
   if (input.message.trim().length < 10) {
@@ -49,7 +49,8 @@ export async function submitEnquiry(
      and record nothing. */
   if (input.company) return { ok: true };
 
-  const problem = invalid(input);
+  const categories = await getCategories();
+  const problem = invalid(input, categories);
   if (problem) return { ok: false, error: problem };
 
   const url = process.env.ENQUIRY_WEBHOOK_URL;
@@ -72,8 +73,8 @@ export async function submitEnquiry(
         name: input.name.trim(),
         email: input.email.trim(),
         phone: input.phone.trim(),
-        collection: collectionName(input.collection),
-        product: productName(input.collection, input.product),
+        collection: collectionName(categories, input.collection),
+        product: productName(categories, input.collection, input.product),
         message: input.message.trim(),
       }),
       signal: AbortSignal.timeout(12_000),
@@ -98,13 +99,17 @@ export async function submitEnquiry(
 }
 
 /* The sheet should read the way a person would say it, not in slugs. */
-function collectionName(slug: string) {
-  return CATEGORIES.find((c) => c.slug === slug)?.name ?? slug;
+function collectionName(categories: Category[], slug: string) {
+  return categories.find((c) => c.slug === slug)?.name ?? slug;
 }
 
-function productName(collectionSlug: string, productSlug: string) {
+function productName(
+  categories: Category[],
+  collectionSlug: string,
+  productSlug: string
+) {
   if (!productSlug) return "";
-  const category = CATEGORIES.find((c) => c.slug === collectionSlug);
+  const category = categories.find((c) => c.slug === collectionSlug);
   const product = category?.products.find((p) => p.slug === productSlug);
   return product ? `${product.name} — ${product.sizes[0]}` : productSlug;
 }
