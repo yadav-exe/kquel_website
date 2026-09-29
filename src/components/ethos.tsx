@@ -80,8 +80,7 @@ function ExperienceCard({ card, aspect }: { card: Card; aspect: string }) {
         sizes="(max-width: 768px) 80vw, 60vw"
         className="object-cover"
       />
-      {/* Constant dim + bottom gradient for text legibility, per DESIGN.md
-          chiaroscuro imagery treatment. */}
+      {/* Constant dim + bottom gradient for text legibility — the design system's chiaroscuro imagery treatment. */}
       <div
         className="absolute inset-0 bg-[linear-gradient(rgb(11_11_15/0.32),rgb(11_11_15/0.32)),linear-gradient(0deg,rgb(11_11_15/0.88)_0%,rgb(11_11_15/0.25)_45%,transparent_70%)]"
         aria-hidden

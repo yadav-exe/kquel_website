@@ -78,7 +78,7 @@ export default function Innovation({
         </div>
 
         <motion.div {...rise(0.12)} className="relative">
-          {/* Chrome hairline frame with the image inset, per DESIGN.md. */}
+          {/* Chrome hairline frame with the image inset. */}
           <div className="border border-chrome/20 p-3 md:p-4">
             <div className="relative aspect-square overflow-hidden">
               <SanityPicture
