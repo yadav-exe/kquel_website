@@ -4,9 +4,9 @@
      npm run seed                 writes everything
      npm run seed -- -- --dry-run prints what would be written
 
-   Safe to run again: every document has a fixed id and is replaced in
-   place, and Sanity keeps one copy of an image however often it is
-   uploaded. */
+   Refuses to run against a dataset that already holds content, because
+   every document has a fixed id and would be replaced in place — editors'
+   changes would be lost. Pass --overwrite to do that deliberately. */
 
 import { createReadStream, existsSync } from "node:fs";
 import path from "node:path";
@@ -15,6 +15,7 @@ import { CATEGORIES } from "./seed/catalog";
 import { ABOUT_PAGE, HOME_PAGE, SITE_SETTINGS, type SeedImage } from "./seed/pages";
 
 const dryRun = process.argv.includes("--dry-run");
+const overwrite = process.argv.includes("--overwrite");
 
 /* The CLI does not load env files for scripts; the write token lives in
    .env.local. Run with --with-user-token after `npx sanity login` instead
@@ -94,6 +95,17 @@ const productId = (s: string) => `product-${s}`;
 
 async function main() {
   console.log(dryRun ? "Dry run — nothing will be written.\n" : `Seeding ${client.config().projectId}/${client.config().dataset}\n`);
+
+  if (!dryRun && !overwrite) {
+    const existing = await client.fetch<number>(
+      'count(*[_type in ["collection", "product", "siteSettings", "homePage", "aboutPage"]])'
+    );
+    if (existing > 0) {
+      throw new Error(
+        `The dataset already holds ${existing} documents. Seeding would overwrite edits made in the Studio. Re-run with --overwrite only if that is what you want.`
+      );
+    }
+  }
 
   const docs: Record<string, unknown>[] = [];
 

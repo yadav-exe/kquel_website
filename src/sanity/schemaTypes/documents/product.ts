@@ -20,6 +20,7 @@ const countField = (
   name: string,
   title: string,
   initialValue: number,
+  max: number,
   description?: string
 ) =>
   defineField({
@@ -37,6 +38,7 @@ const countField = (
           return "Required for a whirlpool piece.";
         }
         if (!Number.isInteger(value) || value < 0) return "Whole numbers only.";
+        if (value > max) return `No piece carries more than ${max}.`;
         return true;
       }),
   });
@@ -189,17 +191,18 @@ export const productType = defineType({
       description:
         "Replaces “Acrylic bathtub” as the first construction line, e.g. “Spa 10 mm thickness”. Leave blank for the standard shell.",
     }),
-    countField("pumps", "Whirlpool pumps", 1),
-    countField("jets", "Whirlpool jets", 6),
-    countField("spineJets", "Spine jets", 2, "The finer jets up the backrest."),
+    countField("pumps", "Whirlpool pumps", 1, 6),
+    countField("jets", "Whirlpool jets", 6, 40),
+    countField("spineJets", "Spine jets", 2, 16, "The finer jets up the backrest."),
     countField(
       "bubbleJets",
       "Air bubble jets",
       12,
+      60,
       "Air outlets in the floor of the shell."
     ),
-    countField("pillows", "Pillows", 1),
-    countField("lights", "Underwater lights", 1),
+    countField("pillows", "Pillows", 1, 8),
+    countField("lights", "Underwater lights", 1, 12),
     defineField({
       name: "ratedAirPump",
       title: "700 kWh air pump",

@@ -25,7 +25,8 @@ export default defineConfig({
   schema: {
     types: schemaTypes,
     templates: (templates) => [
-      /* Singletons cannot be created; the one copy opens from the sidebar. */
+      /* Singletons cannot be created; the one copy opens from the sidebar.
+         Nor can they be unpublished — the site has no page without them. */
       ...templates.filter(
         (template) => !SINGLETON_TYPES.has(template.schemaType)
       ),
@@ -45,7 +46,7 @@ export default defineConfig({
       SINGLETON_TYPES.has(schemaType)
         ? actions.filter(({ action }) =>
             action
-              ? ["publish", "unpublish", "discardChanges", "restore"].includes(
+              ? ["publish", "discardChanges", "restore"].includes(
                   action
                 )
               : false

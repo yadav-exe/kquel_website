@@ -75,8 +75,20 @@ export default function ProductBlueprint({ product }: { product: Product }) {
   const blueprint = product.blueprint;
   if (!blueprint) return null;
 
-  const { form, aspect, counts, callouts } = blueprint;
+  const { form, aspect, callouts } = blueprint;
   const animate = !reduceMotion;
+
+  /* The Studio enforces the same ceilings; this guards content that
+     arrives by other routes, so the drawing degrades rather than sprawls. */
+  const cap = (n: number, max: number) =>
+    Math.min(max, Math.max(0, Math.floor(Number.isFinite(n) ? n : 0)));
+  const counts = {
+    jets: cap(blueprint.counts.jets, 40),
+    spineJets: cap(blueprint.counts.spineJets, 16),
+    bubbleJets: cap(blueprint.counts.bubbleJets, 60),
+    pumps: cap(blueprint.counts.pumps, 6),
+    lights: cap(blueprint.counts.lights, 12),
+  };
 
   /* Plan footprint, scaled to the product's own proportion. */
   const square = form === "round" || form === "corner";
